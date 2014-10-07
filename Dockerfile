@@ -48,7 +48,7 @@ RUN . /tmp/prov.sh try_emerge -DN --complete-graph --with-bdeps=y app-editors/vi
 # but don't depclean nano either
 RUN . /tmp/prov.sh try_emerge --noreplace app-editors/nano
 
-# depclean / -e world scrub cycle
+# depclean / -e world scrub/rinse cycle
 RUN . /tmp/prov.sh && try_emerge -DuN --with-bdeps=y --complete-graph --keep-going=y '@world'
 RUN . /tmp/prov.sh && try_emerge -D --with-bdeps=y --complete-graph --depclean
 RUN . /tmp/prov.sh && try_emerge -e '@world'
@@ -63,6 +63,7 @@ RUN rm -rvf /var/tmp/portage
 
 WORKDIR /root
 ENTRYPOINT ["/bin/bash", "-l"]
-ONBUILD emerge-webrsync
 
+VOLUME /usr/portage
+ONBUILD RUN cat /proc/mounts && echo "maybe emerge-webrsync?"
 
