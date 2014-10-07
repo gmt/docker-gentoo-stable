@@ -5,25 +5,14 @@
 FROM    aegypius/gentoo:latest
 MAINTAINER Greg Turner "gmt@be-evil.net"
 
-ENV PROV_LOCALE en_US.UTF-8 UTF-8
-ENV PROV_EMERGE_JOBS 6
-
 RUN emerge-webrsync
 
-COPY prov.sh /tmp/prov.sh
-
-# make.conf
-RUN . /tmp/prov.sh && hack_up_make_conf
-
-# locale
-RUN . /tmp/prov.sh && prov_locale
-
 # portage
-RUN . /tmp/prov.sh && PROV_AUTOUNMASK=1 try_emerge sys-apps/portage --oneshot
+RUN emerge sys-apps/portage --oneshot
 RUN eselect news read
 
 # kernel
-RUN . /tmp/prov.sh && PROV_AUTOUNMASK=1 USE=symlink try_emerge sys-kernel/gentoo-sources --oneshot
+RUN USE=symlink emerge sys-kernel/gentoo-sources
 COPY kernel.config /usr/src/linux/.config
 RUN cd /usr/src/linux && { make oldconfig || { ls -la ; /bin/false ; } ; }
 RUN cd /usr/src/linux && make prepare
@@ -35,6 +24,16 @@ RUN cd /usr/src/linux && make prepare1 || /bin/true
 RUN cd /usr/src/linux && make prepare2 || /bin/true
 RUN cd /usr/src/linux && make prepare3 || /bin/true
 RUN cd /usr/src/linux && make modules_prepare
+
+COPY prov.sh /tmp/prov.sh
+
+# make.conf
+ENV PROV_EMERGE_JOBS 8
+RUN . /tmp/prov.sh && hack_up_make_conf
+
+# locale
+ENV PROV_LOCALE en_US.UTF-8 UTF-8
+RUN . /tmp/prov.sh && prov_locale
 
 # update world
 RUN fixpackages
@@ -54,6 +53,7 @@ RUN . /tmp/prov.sh && try_emerge -D --with-bdeps=y --complete-graph --depclean
 RUN . /tmp/prov.sh && try_emerge -e '@world'
 
 #cleanup
+RUN emerge -C sys-kernel/gentoo-sources --deselect=n
 RUN rm -v /tmp/prov.sh
 RUN rm -rvf /usr/portage/*
 RUN rm -rvf /var/tmp/portage
