@@ -57,6 +57,11 @@ RUN . /tmp/prov.sh && try_emerge -e '@world'
 RUN rm -v /tmp/prov.sh
 RUN rm -rvf /usr/portage/*
 RUN rm -rvf /var/tmp/portage
+RUN rm -rvf /tmp/*
+RUN echo
+RUN echo remaining stuff:
+RUN echo ================
+RUN find /
 
 # FIXME: change root password on run
 # RUN echo "root:$(openssl rand -base64 32)" | chpasswd
