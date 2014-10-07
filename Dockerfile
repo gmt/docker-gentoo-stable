@@ -8,11 +8,11 @@ MAINTAINER Greg Turner "gmt@be-evil.net"
 RUN emerge-webrsync
 
 # portage
-RUN emerge sys-apps/portage --oneshot
+RUN emerge --nospinner sys-apps/portage --oneshot
 RUN eselect news read
 
 # kernel
-RUN USE=symlink emerge sys-kernel/gentoo-sources
+RUN USE=symlink emerge --nospinner sys-kernel/gentoo-sources
 COPY kernel.config /usr/src/linux/.config
 RUN cd /usr/src/linux && { make oldconfig || { ls -la ; /bin/false ; } ; }
 RUN cd /usr/src/linux && make prepare
