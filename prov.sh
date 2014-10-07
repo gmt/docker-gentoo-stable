@@ -16,8 +16,11 @@
 try_emerge() {
 	local prov_tries=${PROV_EMERGE_TRIES:-3}
 	local prov_jobs=${PROV_EMERGE_JOBS:-1}
-	if ( echo "$1" | grep -q '^[[:digit:]]*$' ) ; then
-		local prov_jobs=$1
+
+	# nb: somehow [[:isdigit:]]* is matching "-e"
+	# here, do not use!
+	if ( echo "$1" | grep -q '^[[0-9]]*$' ) ; then
+		prov_jobs=$1
 		shift
 	fi
 	local prov_makeopts="-j${prov_jobs}"
@@ -54,19 +57,20 @@ try_emerge() {
 
 	local prov_success=1
 
-	local my_prov_args=() my_prov_parallel=${prov_parallel}
+	local my_prov_args=() my_prov_parallel=${prov_parallel} my_prov_makeopts="${prov_makeopts}"
 	while [[ ${prov_success} -ne 0 && ${prov_tries} -gt 0 ]]; do
 		if [[ ${prov_tries} -eq 1 ]]; then
-			my_prov_parallel=-${prov_parallel#-}
+			my_prov_parallel="-${prov_parallel#-}"
+			my_prov_makeopts="-j1"
 			my_prov_args=( "${prov_args[@]}" "$@" )
 		else
 			my_prov_args=( "${prov_parallel_args[@]}" "${prov_args[@]}" "$@" )
 		fi
-		echo "EXECUTING: MAKEOPTS=\"${prov_makeopts}\" \\"
-		echo "	FEATURES=\"notitles ${prov_parallel}\" \\"
+		echo "EXECUTING: MAKEOPTS=\"${my_prov_makeopts}\" \\"
+		echo "	FEATURES=\"notitles ${my_prov_parallel}\" \\"
 		echo "	emerge ${my_prov_args[*]}"
-		MAKEOPTS="${prov_makeopts}" \
-			FEATURES="notitles ${prov_parallel}" \
+		MAKEOPTS="${my_prov_makeopts}" \
+			FEATURES="notitles ${my_prov_parallel}" \
 			emerge "${my_prov_args[@]}" && prov_success=$?
 		(( prov_tries-- ))
 	done
