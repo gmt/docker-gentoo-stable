@@ -58,6 +58,7 @@ RUN rm -v /tmp/prov.sh
 RUN rm -rvf /usr/portage/*
 RUN rm -rvf /var/tmp/portage
 RUN rm -rvf /tmp/*
+RUN rm -rvf /var/log/*
 RUN echo
 RUN echo remaining stuff:
 RUN echo ================
