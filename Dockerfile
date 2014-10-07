@@ -2,7 +2,7 @@
 #
 # VERSION               0.0.1
 
-FROM    danthedispatcher/gentoo-nomultilib
+FROM    aegypius/gentoo:latest
 MAINTAINER Greg Turner "gmt@be-evil.net"
 
 ENV PROV_LOCALE en_US.UTF-8 UTF-8
