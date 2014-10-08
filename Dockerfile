@@ -43,9 +43,9 @@ RUN . /tmp/prov.sh && PROV_AUTOUNMASK=1 try_emerge -DuN --keep-going=y '@world'
 RUN . /tmp/prov.sh && try_emerge app-portage/{eix,gentoolkit,layman,mirrorselect,portage-utils}
 
 # vim (somehow brings in conflicting deptree atoms without this)
-RUN . /tmp/prov.sh try_emerge -DN --complete-graph --with-bdeps=y app-editors/vim
+RUN . /tmp/prov.sh && try_emerge -DN --complete-graph --with-bdeps=y app-editors/vim
 # but don't depclean nano either
-RUN . /tmp/prov.sh try_emerge --noreplace app-editors/nano
+RUN . /tmp/prov.sh && try_emerge --noreplace app-editors/nano
 
 # depclean / -e world scrub/rinse cycle
 RUN . /tmp/prov.sh && try_emerge -DuN --with-bdeps=y --complete-graph --keep-going=y '@world'
