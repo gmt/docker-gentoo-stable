@@ -74,8 +74,22 @@ try_emerge() {
 		echo "	emerge ${my_prov_args[*]}"
 		MAKEOPTS="${my_prov_makeopts}" \
 			FEATURES="notitles ${my_prov_parallel}" \
-			emerge "${my_prov_args[@]}" && prov_success=$?
+			emerge "${my_prov_args[@]}"
+		prov_success=$?
 		(( prov_tries-- ))
+		if [[ ${prov_success} -ne 0 ]]; then
+			echo
+			if [[ ${prov_tries} -eq 0 ]]; then
+				echo "==================================="
+				echo "ERROR: emerge failed.  Giving up..."
+				echo "==================================="
+			else
+				echo "=================================="
+				echo "ERROR: emerge failed.  Retrying..."
+				echo "=================================="
+			fi
+			echo
+		fi
 	done
 
 	[[ ${PROV_NO_OVERRIDE_CONFIG_PROTECT} ]] || \
