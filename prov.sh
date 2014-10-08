@@ -17,6 +17,9 @@ try_emerge() {
 	local prov_tries=${PROV_EMERGE_TRIES:-3}
 	local prov_jobs=${PROV_EMERGE_JOBS:-1}
 
+	[[ ${PROV_NO_OVERRIDE_CONFIG_PROTECT} ]] || \
+		export CONFIG_PROTECT="-*"
+
 	# nb: somehow [[:isdigit:]]* is matching "-e"
 	# here, do not use!
 	if ( echo "$1" | grep -q '^[[0-9]]*$' ) ; then
@@ -74,6 +77,10 @@ try_emerge() {
 			emerge "${my_prov_args[@]}" && prov_success=$?
 		(( prov_tries-- ))
 	done
+
+	[[ ${PROV_NO_OVERRIDE_CONFIG_PROTECT} ]] || \
+		unset CONFIG_PROTECT
+
 	return ${prov_success}
 }
 
