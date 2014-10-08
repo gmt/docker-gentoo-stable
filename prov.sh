@@ -17,8 +17,10 @@ try_emerge() {
 	local prov_tries=${PROV_EMERGE_TRIES:-3}
 	local prov_jobs=${PROV_EMERGE_JOBS:-1}
 
+	# n.b.: somehow /etc/hosts is locked up by docker
+	# under certain conditions (bug?)
 	[[ ${PROV_NO_OVERRIDE_CONFIG_PROTECT} ]] || \
-		export CONFIG_PROTECT="-*"
+		export CONFIG_PROTECT="-* /etc/hosts"
 
 	# nb: somehow [[:isdigit:]]* is matching "-e"
 	# here, do not use!
@@ -89,6 +91,11 @@ try_emerge() {
 				echo "=================================="
 			fi
 			echo
+		elif [[ ! ${PROV_NO_OVERRIDE_CONFIG_PROTECT} ]]; then
+			echo "=========================================="
+			echo "emerge successful -- running etc-update..."
+			echo "=========================================="
+			etc-update --automode -5 || prov_success=$?
 		fi
 	done
 
