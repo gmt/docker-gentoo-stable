@@ -28,7 +28,7 @@ RUN cd /usr/src/linux && make modules_prepare
 COPY prov.sh /tmp/prov.sh
 
 # make.conf
-ENV PROV_EMERGE_JOBS 8
+ENV PROV_EMERGE_JOBS 1
 RUN . /tmp/prov.sh && hack_up_make_conf
 
 # locale
