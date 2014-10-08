@@ -14,7 +14,7 @@ RUN eselect news read
 # kernel
 RUN USE=symlink emerge --nospinner sys-kernel/gentoo-sources
 COPY kernel.config /usr/src/linux/.config
-RUN cd /usr/src/linux && { make oldconfig || { ls -la ; /bin/false ; } ; }
+RUN cd /usr/src/linux && { make olddefconfig || { ls -la ; /bin/false ; } ; }
 RUN cd /usr/src/linux && make prepare
 
 # let some things fail in case kernel changes
