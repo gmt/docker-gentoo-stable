@@ -5,6 +5,26 @@
 FROM    aegypius/gentoo:latest
 MAINTAINER Greg Turner "gmt@be-evil.net"
 
+RUN mkdir -p /usr/portage/metadata
+RUN echo "masters = gentoo" > /usr/portage/metadata/layout.conf
+RUN chown -Rc portage:portage /usr/portage
+
+# Setup the (virtually) current runlevel
+RUN echo "default" > /run/openrc/softlevel
+
+# Setup the rc_sys
+RUN sed -e 's/#rc_sys=""/rc_sys="lxc"/g' -i /etc/rc.conf
+
+# Setup the net.lo runlevel
+RUN ln -s /etc/init.d/net.lo /run/openrc/started/net.lo
+
+# Setup the net.eth0 runlevel
+RUN ln -s /etc/init.d/net.lo /etc/init.d/net.eth0
+RUN ln -s /etc/init.d/net.eth0 /run/openrc/started/net.eth0
+
+# By default, UTC system
+RUN echo 'UTC' > /etc/timezone
+
 RUN emerge-webrsync
 
 # portage
@@ -71,5 +91,13 @@ WORKDIR /root
 ENTRYPOINT ["/bin/bash", "-l"]
 
 VOLUME /usr/portage
-ONBUILD RUN cat /proc/mounts && echo "maybe emerge-webrsync?"
+
+# Used when this image is the base of another
+#
+# Setup the portage directory and permissions
+ONBUILD RUN if [[ $(cat /proc/mounts | sed 's/^[^[:space:]]*[[:space:]]//;s/[[:space:]].*$//' | egrep '^/usr/portage(/|$)' | wc -l) -eq 0 ]]; then mkdir -p /usr/portage/metadata; echo "masters = gentoo" > /usr/portage/metadata/layout.conf; chown -R portage:portage /usr/portage; emerge-webrsync -q; fi
+
+ONBUILD RUN env-update
+
+ONBUILD RUN eselect news read
 
