@@ -84,9 +84,6 @@ RUN echo remaining stuff:
 RUN echo ================
 RUN find /
 
-# FIXME: change root password on run
-# RUN echo "root:$(openssl rand -base64 32)" | chpasswd
-
 WORKDIR /root
 ENTRYPOINT ["/bin/bash", "-l"]
 
