@@ -88,9 +88,4 @@ VOLUME /usr/portage
 # Used when this image is the base of another
 #
 # Setup the portage directory and permissions
-ONBUILD RUN if [[ $(cat /proc/mounts | sed 's/^[^[:space:]]*[[:space:]]//;s/[[:space:]].*$//' | egrep '^/usr/portage(/|$)' | wc -l) -eq 0 ]]; then mkdir -p /usr/portage/metadata; echo "masters = gentoo" > /usr/portage/metadata/layout.conf; chown -R portage:portage /usr/portage; emerge-webrsync -q; fi
-
-ONBUILD RUN env-update
-
-ONBUILD RUN eselect news read
-
+ONBUILD RUN [[ -f /usr/portage/profiles/repo_name ]] || { mkdir -p /usr/portage/metadata && echo "masters = gentoo" > /usr/portage/metadata/layout.conf && chown -R portage:portage /usr/portage && emerge-webrsync && env-update; }
