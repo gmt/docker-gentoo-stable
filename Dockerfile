@@ -83,9 +83,7 @@ RUN rm -rf /usr/portage_distfiles/* $(ls -da /usr/portage/distfiles/.* 2>/dev/nu
 RUN rm -rf /usr/portage_packages $(ls -da /usr/portage/packages/.* 2>/dev/null | tail -n +3)
 
 WORKDIR /root
-ENTRYPOINT ["/bin/bash", "-l"]
-
-VOLUME /usr/portage
+ENTRYPOINT ["/bin/bash", "-"]
 
 # Used when this image is the base of another
 #
