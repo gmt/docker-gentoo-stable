@@ -91,7 +91,7 @@ try_emerge() {
 				echo "=================================="
 			fi
 			echo
-		elif [[ ! ${PROV_NO_OVERRIDE_CONFIG_PROTECT} ]]; then
+		elif [[ ( ! ${PROV_NO_OVERRIDE_CONFIG_PROTECT} ) && ( ! ${PROV_NO_ETC_UPDATE} ) ]]; then
 			echo "=========================================="
 			echo "emerge successful -- running etc-update..."
 			echo "=========================================="
@@ -99,7 +99,9 @@ try_emerge() {
 			# this will simply discard un-merge-able files which
 			# were hard-coded into CONFIG_PROTECT since we
 			# expect docker not to let them be updated
-			etc-update --automode -9 || prov_success=$?
+			{ { echo YES && yes; } | \
+				etc-update --automode -9; } || \
+					prov_success=$?
 		fi
 	done
 
