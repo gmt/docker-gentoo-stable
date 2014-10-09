@@ -79,6 +79,8 @@ RUN rm -rf /usr/portage/*
 RUN rm -rf /var/tmp/portage
 RUN rm -rf /tmp/*
 RUN rm -rf /var/log/*
+RUN rm -rf /usr/portage_distfiles/* $(ls -da /usr/portage/distfiles/.* 2>/dev/null |tail -n +3)
+RUN rm -rf /usr/portage_packages $(ls -da /usr/portage/packages/.* 2>/dev/null | tail -n +3)
 
 WORKDIR /root
 ENTRYPOINT ["/bin/bash", "-l"]
