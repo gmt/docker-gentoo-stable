@@ -8,14 +8,14 @@
 # parallel-build machinery deactivated.  If PROV_EMERGE_TRIES is
 # defined, try that many times.
 #
-# If the first argument is a number, that will replace PROV_EMERGE_JOBS
-# and will not be passed along to emerge
+# If the first argument is a number, that will replace
+# PROV_EMERGE_PARALLELISM and will not be passed along to emerge
 #
 # -gmt
 #
 try_emerge() {
 	local prov_tries=${PROV_EMERGE_TRIES:-3}
-	local prov_jobs=${PROV_EMERGE_JOBS:-1}
+	local prov_jobs=${PROV_EMERGE_PARALLELISM:-1}
 
 	# n.b.: somehow /etc/hosts is locked up by docker
 	# under certain conditions (bug?)
@@ -112,7 +112,7 @@ hack_up_make_conf() {
 	mkdir /usr/portage_packages
 	cat >> /etc/portage/make.conf <<-EOF
 
-		MAKEOPTS="-j${PROV_EMERGE_JOBS:-1}"
+		MAKEOPTS="-j${PROV_EMERGE_PARALLELISM:-1}"
 
 		CFLAGS="\${CFLAGS} -mtune=core2"
 		CXXFLAGS="\${CXXFLAGS} -mtune=core2"
