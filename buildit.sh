@@ -225,6 +225,11 @@ if [[ ${background} ]]; then
 	# fake out the bail routine not to touch parallelism -- we'll
 	# fix it ourselves.
 	parallelism_override="${old_parallelism}" doit &
+
+	# fuck.  we are now racing docker build to hack up the parallelism in Dockerfile... 
+	# this is a stupidly hard problem, really wish I'd though of it sooner :(
+	echo "Sleeping due to race condition (FIXME)..."
+	sleep 5
 else
 	doit
 fi
