@@ -95,7 +95,11 @@ try_emerge() {
 			echo "=========================================="
 			echo "emerge successful -- running etc-update..."
 			echo "=========================================="
-			etc-update --automode -5 || prov_success=$?
+
+			# this will simply discard un-merge-able files which
+			# were hard-coded into CONFIG_PROTECT since we
+			# expect docker not to let them be updated
+			etc-update --automode -9 || prov_success=$?
 		fi
 	done
 
