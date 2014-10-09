@@ -74,15 +74,11 @@ RUN . /tmp/prov.sh && try_emerge -e '@world'
 
 #cleanup
 RUN emerge -C sys-kernel/gentoo-sources --deselect=n
-RUN rm -v /tmp/prov.sh
-RUN rm -rvf /usr/portage/*
-RUN rm -rvf /var/tmp/portage
-RUN rm -rvf /tmp/*
-RUN rm -rvf /var/log/*
-RUN echo
-RUN echo remaining stuff:
-RUN echo ================
-RUN find /
+RUN rm -f /tmp/prov.sh
+RUN rm -rf /usr/portage/*
+RUN rm -rf /var/tmp/portage
+RUN rm -rf /tmp/*
+RUN rm -rf /var/log/*
 
 WORKDIR /root
 ENTRYPOINT ["/bin/bash", "-l"]
